@@ -1,5 +1,5 @@
 
-model_type: vit_arc
+model_type: arc_vit
 architectures: [
     ViTArcForImageClassification
 ]
