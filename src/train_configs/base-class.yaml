@@ -1,17 +1,15 @@
 trainer_type: XLAClassTrainer
 
-lr: 0.0006
-lr_steps: # 1,281,167
+lr: 0.003
 
-bs: 512
+bs: 4096
 mini_bs: 16
 
 beta1: 0.9
-beta2: 0.95
+beta2: 0.999
 eps: 0.00000001
-weight_decay: 0.1
+weight_decay: 0.3
 
-warmup_steps: 500
-lr_steps: 500000
-
-checkpoint_interval: 5000
+num_epochs: 300
+lr_steps: 384350100
+warmup_steps: 10000

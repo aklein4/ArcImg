@@ -108,11 +108,10 @@ class BaseXLATrainer:
         if self.lr_steps is None:
             return warmup_scheduler
 
-        cooldown_scheduler = torch.optim.lr_scheduler.LinearLR(
+        cooldown_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer,
-            start_factor=1.0,
-            end_factor=1e-10,
-            total_iters=self.lr_steps
+            self.lr_steps - self.warmup_steps,
+            1e-10,
         )
         return torch.optim.lr_scheduler.SequentialLR(
             optimizer, [warmup_scheduler, cooldown_scheduler],
