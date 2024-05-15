@@ -143,7 +143,6 @@ class BaseXLATrainer:
 
         # loop
         curr_step = 0
-        token_tracker = xm.RateTracker()
         step_tracker = xm.RateTracker()
         for epoch in range(self.num_epochs):
             for x, y in loader:
@@ -193,7 +192,6 @@ class BaseXLATrainer:
                 lr_scheduler.step()
 
                 # tracking
-                token_tracker.add(self.bs * x.shape[1])
                 step_tracker.add(1)
                 curr_step += 1
 
@@ -211,7 +209,6 @@ class BaseXLATrainer:
                         f"LR = {self.log.lr:.2e}",
                         f"Loss = {self.log.loss:.4f}",
                         f"{step_tracker.rate():.2f} steps/s",
-                        f"{round(3600*token_tracker.rate()):_} tok/h"
                     ]
                     log_master_print("{: >15}{: >20}{: >20}{: >20}{: >23}".format(*msg))
                 

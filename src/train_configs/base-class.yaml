@@ -3,7 +3,7 @@ trainer_type: XLAClassTrainer
 lr: 0.003
 
 bs: 4096
-mini_bs: 16
+mini_bs: 256
 
 beta1: 0.9
 beta2: 0.999
