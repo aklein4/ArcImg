@@ -118,10 +118,12 @@ class ArcVitForImageClassification(ViTPreTrainedModel):
 
         true_states = self.vit(pixel_values, labels=true_labels)
         true_logits = self.classifier(true_states)
+        log_print("TRUE LOGITS!")
 
         fake_labels = torch.distributions.Categorical(logits=class_logits).sample()
         fake_states = self.vit(pixel_values, labels=fake_labels)
         fake_logits = self.classifier(fake_states)
+        log_print("FAKE LOGITS!")
 
         # get arc outputs
         ar = torch.arange(bs, device=class_logits.device, dtype=torch.long)
@@ -131,10 +133,12 @@ class ArcVitForImageClassification(ViTPreTrainedModel):
 
         true_arc = tmp_true_logits[ar, true_labels] - tmp_class_logits[ar, true_labels].detach()
         fake_arc = tmp_fake_logits[ar, fake_labels] - tmp_class_logits[ar, fake_labels].detach()
+        log_print("ARCS!")
 
         # normalize class logits
         if not debug:
             class_logits = F.log_softmax(class_logits, dim=-1)
+        log_print("LOG SOFTMAX!")
 
         return (
             class_logits,
