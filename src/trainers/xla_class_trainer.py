@@ -10,7 +10,7 @@ from  utils.training_utils import loss, acc, pcorr, top5_acc
 class XLAClassTrainer(BaseXLATrainer):
 
     def train_step(self, model, x, y):
-        logits = model(x).logits
+        logits = model(x, return_dict=False)[0]
 
         results = DotDict(
             class_loss=loss(logits, y),
