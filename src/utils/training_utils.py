@@ -2,20 +2,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from utils.logging_utils import log_print
-
 
 def loss(preds, targets):
-    out = F.cross_entropy(preds, targets)
-    log_print("Loss!")
-    return out
+    return F.cross_entropy(preds, targets)
 
 
 @torch.no_grad()
 def acc(preds, targets):
-    out = (preds.argmax(-1) == targets).float().mean()
-    log_print("Accuracy!")
-    return out
+    return (preds.argmax(-1) == targets).float().mean()
 
 
 @torch.no_grad()
@@ -26,9 +20,7 @@ def pcorr(preds, targets):
     )
     p = torch.exp(logp)
 
-    out = p.mean()
-    log_print("PCorr!")
-    return out
+    return p.mean()
 
 
 @torch.no_grad()
@@ -41,9 +33,7 @@ def top5_acc(preds, targets):
     )
 
     rank = (preds >= logp.unsqueeze(-1)).float().sum(-1)
-    out = (rank <= 5).float().mean()
-    log_print("Top5 Accuracy!")
-    return out
+    return (rank <= 5).float().mean()
 
 
 def arc_loss(true_preds, fake_preds):

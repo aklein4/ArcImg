@@ -11,7 +11,7 @@ import huggingface_hub as hf
 
 import utils.constants as constants
 from utils.data_utils import DotDict
-from utils.logging_utils import LogSection, log_print, log_master_print
+from utils.logging_utils import LogSection, log_master_print
 
 
 class BaseXLATrainer:

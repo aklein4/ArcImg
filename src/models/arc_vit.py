@@ -8,8 +8,6 @@ from transformers.models.vit.modeling_vit import (
     ViTEncoder,
 )
 
-from utils.logging_utils import log_print
-
 
 class ArcViTEmbeddings(ViTEmbeddings):
 
@@ -27,19 +25,13 @@ class ArcViTEmbeddings(ViTEmbeddings):
     ) -> torch.Tensor:
         batch_size, num_channels, height, width = pixel_values.shape
         embeddings = self.patch_embeddings(pixel_values, interpolate_pos_encoding=interpolate_pos_encoding)
-        log_print("PATCH EMBEDDINGS!")
 
         # add the [CLS] token to the embedded patch tokens
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)
-        log_print("CLS TOKENS Before!")
         if labels is not None:
-            log_print(f"{labels.shape}, {labels.dtype}")
             label_tokens = self.label_tokens(labels.unsqueeze(1))
-            log_print(f"{cls_tokens.shape}, {label_tokens.shape}")
             cls_tokens = cls_tokens + label_tokens
-        log_print("LABEL TOKENS!")
         embeddings = torch.cat((cls_tokens, embeddings), dim=1)
-        log_print("CLS TOKENS After!")
 
         # add positional encoding to each token
         if interpolate_pos_encoding:
@@ -49,7 +41,6 @@ class ArcViTEmbeddings(ViTEmbeddings):
 
         embeddings = self.dropout(embeddings)
 
-        log_print("EMBEDDINGS!")
         return embeddings
 
 
@@ -73,7 +64,6 @@ class ArcViTModel(ViTPreTrainedModel):
         labels = None,
         interpolate_pos_encoding = False,
     ):
-        log_print("VIT CALL!")
 
         expected_dtype = self.embeddings.patch_embeddings.projection.weight.dtype
         if pixel_values.dtype != expected_dtype:
@@ -82,7 +72,6 @@ class ArcViTModel(ViTPreTrainedModel):
         embedding_output = self.embeddings(
             pixel_values, labels=labels, interpolate_pos_encoding=interpolate_pos_encoding
         )
-        log_print("EMBEDDING OUTPUT!")
 
         hidden_states = self.encoder(
             embedding_output
@@ -90,7 +79,6 @@ class ArcViTModel(ViTPreTrainedModel):
         hidden_states = self.layernorm(hidden_states)
 
         cls_state = hidden_states[:, 0]
-        log_print("CLS STATE!")
         return cls_state
     
 
