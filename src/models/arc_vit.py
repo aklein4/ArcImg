@@ -34,7 +34,7 @@ class ArcViTEmbeddings(ViTEmbeddings):
         log_print("CLS TOKENS Before!")
         if labels is not None:
             log_print(f"{labels.shape}, {labels.dtype}")
-            label_tokens = self.label_tokens(labels).unsqueeze(1)
+            label_tokens = self.label_tokens(labels.unsqueeze(1))
             log_print(cls_tokens.shape, label_tokens.shape)
             cls_tokens = cls_tokens + label_tokens
         log_print("LABEL TOKENS!")
