@@ -222,6 +222,7 @@ class BaseXLATrainer:
                     (epoch+1) % self.checkpoint_interval == 0 or
                     epoch == self.num_epochs - 1
                 ):
+                    xm.mark_step()
                     self.save_checkpoint(
                         {
                             'model': (model, True),
