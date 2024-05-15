@@ -4,11 +4,11 @@ import torch.nn.functional as F
 
 from utils.logging_utils import log_print
 
+
 def loss(preds, targets):
     out = F.cross_entropy(preds, targets)
     log_print("Loss!")
     return out
-
 
 
 @torch.no_grad()
@@ -28,6 +28,7 @@ def pcorr(preds, targets):
 
     out = p.mean()
     log_print("PCorr!")
+    return out
 
 
 @torch.no_grad()
