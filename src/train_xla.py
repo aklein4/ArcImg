@@ -12,7 +12,7 @@ from trainers import TRAINER_DICT
 
 import utils.constants as constants
 from utils.config_utils import load_model_config, load_train_config
-from utils.logging_utils import log_print
+from utils.logging_utils import log_print, log_master_print
 
 
 def _mp_fn(index, args):
@@ -34,6 +34,7 @@ def _mp_fn(index, args):
     log_print("Loading model...")
     model_type = model_config["model_type"]
     model_type_config = CONFIG_DICT[model_type](**model_config)
+    log_master_print(model_type_config)
     model = MODEL_DICT[model_type](model_type_config).to(xm.xla_device())
     
     # broadcast with bfloat16 for speed
