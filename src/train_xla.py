@@ -10,9 +10,8 @@ from loaders.imagenet_loader import get_imagenet_loader
 from models import CONFIG_DICT, MODEL_DICT
 from trainers import TRAINER_DICT
 
-import utils.constants as constants
 from utils.config_utils import load_model_config, load_train_config
-from utils.logging_utils import log_print, log_master_print
+from utils.logging_utils import log_print
 
 
 def _mp_fn(index, args):
