@@ -3,7 +3,7 @@ trainer_type: XLAArcClassTrainer
 lr: 0.003
 
 bs: 4096
-mini_bs: 16
+mini_bs: 256
 
 beta1: 0.9
 beta2: 0.999
@@ -11,7 +11,10 @@ eps: 0.00000001
 weight_decay: 0.3
 
 num_epochs: 300
-lr_steps: 93900 # 1281167 samples -> 313 steps
+lr_steps: 93900 # 1281167 samples -> 313 steps per epoch
 warmup_steps: 10000
 
 w_arc: 1.0
+
+checkpoint_first: 10
+checkpoint_interval: 30

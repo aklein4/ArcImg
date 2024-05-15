@@ -217,13 +217,17 @@ class BaseXLATrainer:
                 
                 xm.add_step_closure(_post_step)
         
-            self.save_checkpoint(
-                {
-                    'model': (model, True),
-                    'optimizer': (optimizer, True),
-                },
-                epoch+1
-            )
+            if (
+                epoch < self.checkpoint_first or
+                (epoch+1) % self.checkpoint_interval == 0 or
+                epoch == self.num_epochs - 1
+            ):
+                self.save_checkpoint(
+                    {
+                        'model': (model, True),
+                    },
+                    epoch+1
+                )
     
 
     def train_step(
