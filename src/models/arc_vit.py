@@ -35,7 +35,7 @@ class ArcViTEmbeddings(ViTEmbeddings):
         if labels is not None:
             log_print(f"{labels.shape}, {labels.dtype}")
             label_tokens = self.label_tokens(labels.unsqueeze(1))
-            log_print(cls_tokens.shape, label_tokens.shape)
+            log_print(f"{cls_tokens.shape}, {label_tokens.shape}")
             cls_tokens = cls_tokens + label_tokens
         log_print("LABEL TOKENS!")
         embeddings = torch.cat((cls_tokens, embeddings), dim=1)
