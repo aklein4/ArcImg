@@ -79,7 +79,6 @@ if __name__ == '__main__':
     args.add_argument("--name", type=str, required=True)
     args.add_argument("--model_config", type=str, required=True)
     args.add_argument("--train_config", type=str, required=True)
-    args.add_argument("--dataset", type=str, required=True)
     args.add_argument("--debug", action="store_true")
     args = args.parse_args()
 
