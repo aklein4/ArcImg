@@ -143,7 +143,7 @@ class BaseXLATrainer:
         curr_step = 0
         token_tracker = xm.RateTracker()
         step_tracker = xm.RateTracker()
-        for epoch in self.num_epochs:
+        for epoch in range(self.num_epochs):
             for x, y in loader:
                 assert x.shape[0] == y.shape[0], "x and y must have same batch size"
                 
