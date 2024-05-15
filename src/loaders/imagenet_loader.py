@@ -17,14 +17,19 @@ LABEL_FILE = os.path.join(constants.BASE_PATH, "loaders", "data", "synset_words.
 
 class ImageCollator:
 
-    def __init__(self, size):
+    def __init__(self, size, eval=False):
         self.size = size
+        self.eval = eval
     
-        self.comp = transforms.Compose([
-            transforms.transforms.Resize(self.size),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor()
-        ])
+        comps = []
+        if not eval:
+            comps += [
+                transforms.RandomResizedCrop(size),
+                transforms.RandomHorizontalFlip()
+            ]
+        comps.append(transforms.ToTensor())
+
+        self.comp = transforms.Compose(comps)
 
         self.label_map = {}
         ind = 0
@@ -70,7 +75,8 @@ def get_imagenet_loader(
     split: str,
     bs: int,
     mini_bs: int,
-    size
+    size,
+    eval=False
 ):
     
     # prepare batch sizes
@@ -87,7 +93,7 @@ def get_imagenet_loader(
     )
 
     # wrap in loader with collator
-    collator = ImageCollator(size)
+    collator = ImageCollator(size, eval=eval)
     loader = torch.utils.data.DataLoader(
         dataset,
         batch_size=sample_size,
