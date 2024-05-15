@@ -165,6 +165,7 @@ class BaseXLATrainer:
                     # get results from train step
                     with autocast(constants.XLA_DEVICE()):
                         results = self.train_step(model, mini_x, mini_y)
+                        log_print([v.shape for v in results.values()])
 
                         # scale results for accumulation
                         for k, v in results.items():
