@@ -31,11 +31,14 @@ class ArcViTEmbeddings(ViTEmbeddings):
 
         # add the [CLS] token to the embedded patch tokens
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)
+        log_print("CLS TOKENS Before!")
         if labels is not None:
             label_tokens = self.label_tokens(labels).unsqueeze(1)
             log_print(cls_tokens.shape, label_tokens.shape)
             cls_tokens = cls_tokens + label_tokens
+        log_print("LABEL TOKENS!")
         embeddings = torch.cat((cls_tokens, embeddings), dim=1)
+        log_print("CLS TOKENS After!")
 
         # add positional encoding to each token
         if interpolate_pos_encoding:
