@@ -122,8 +122,8 @@ class ArcVitForImageClassification(ViTPreTrainedModel):
         # get arc outputs
         ar = torch.arange(bs, device=class_logits.device, dtype=torch.long)
         tmp_class_logits = class_logits.view(bs, -1)
-        tmp_fake_logits = fake_logits.view(bs, -1)
         tmp_true_logits = true_logits.view(bs, -1)
+        tmp_fake_logits = fake_logits.view(bs, -1)
 
         true_arc = tmp_true_logits[ar, true_labels] - tmp_class_logits[ar, true_labels].detach()
         fake_arc = tmp_fake_logits[ar, fake_labels] - tmp_class_logits[ar, fake_labels].detach()

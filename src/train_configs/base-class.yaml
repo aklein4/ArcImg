@@ -11,5 +11,5 @@ eps: 0.00000001
 weight_decay: 0.3
 
 num_epochs: 300
-lr_steps: 384350100
+lr_steps: 93900 # 1281167 samples -> 313 steps
 warmup_steps: 10000
