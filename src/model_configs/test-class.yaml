@@ -13,11 +13,11 @@ image_size: 224
 initializer_range: 0.02
 intermediate_size: 512
 
-layer_norm_eps": 1e-12
-num_attention_heads": 2
-num_channels": 3
-num_hidden_layers": 2
-patch_size": 32
-qkv_bias": true
+layer_norm_eps: 1e-12
+num_attention_heads: 2
+num_channels: 3
+num_hidden_layers: 2
+patch_size: 32
+qkv_bias: true
 
 num_labels: 1000
