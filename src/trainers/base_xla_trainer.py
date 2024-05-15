@@ -229,8 +229,7 @@ class BaseXLATrainer:
                         },
                         epoch+1
                     )
-                return
-    
+
 
     def train_step(
         self,
