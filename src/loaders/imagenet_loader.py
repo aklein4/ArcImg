@@ -53,7 +53,7 @@ class ImageCollator:
             num = elem['__key__'].split("_")[-1]
             labels.append(self.label_map[num])
         
-        return torch.stack(imgs), torch.tensor(labels).long()
+        return torch.stack(imgs).float(), torch.tensor(labels).long()
 
 
 def _get_data_files():
