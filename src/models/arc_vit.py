@@ -27,6 +27,7 @@ class ArcViTEmbeddings(ViTEmbeddings):
     ) -> torch.Tensor:
         batch_size, num_channels, height, width = pixel_values.shape
         embeddings = self.patch_embeddings(pixel_values, interpolate_pos_encoding=interpolate_pos_encoding)
+        log_print("PATCH EMBEDDINGS!")
 
         # add the [CLS] token to the embedded patch tokens
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)
@@ -68,6 +69,7 @@ class ArcViTModel(ViTPreTrainedModel):
         labels = None,
         interpolate_pos_encoding = False,
     ):
+        log_print("VIT CALL!")
 
         expected_dtype = self.embeddings.patch_embeddings.projection.weight.dtype
         if pixel_values.dtype != expected_dtype:
@@ -76,6 +78,7 @@ class ArcViTModel(ViTPreTrainedModel):
         embedding_output = self.embeddings(
             pixel_values, labels=labels, interpolate_pos_encoding=interpolate_pos_encoding
         )
+        log_print("EMBEDDING OUTPUT!")
 
         hidden_states = self.encoder(
             embedding_output
