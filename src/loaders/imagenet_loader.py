@@ -46,6 +46,8 @@ class ImageCollator:
             )
             img = self.comp(img)
             img = (2 * img) - 1
+            if img.shape[0] == 1:
+                img = img.expand(3, -1, -1)
             imgs.append(img)
 
             num = elem['__key__'].split("_")[-1]
