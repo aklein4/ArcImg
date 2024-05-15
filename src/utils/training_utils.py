@@ -3,57 +3,57 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def loss(logits, x, ignore_index):
-    x, logits = x[:, 1:], logits[:, :-1]
-
-    return F.cross_entropy(
-        logits.contiguous().view(-1, logits.shape[-1]),
-        x.contiguous().view(-1),
-        ignore_index=ignore_index
-    )
+def loss(preds, targets):
+    return F.cross_entropy(preds, targets)
 
 
 @torch.no_grad()
-def ppl(logits, x, ignore_index):
-    x = x[:, 1:]
-    logits = logits[:, :-1]
-    mask = x != ignore_index
+def acc(preds, targets):
+    return (preds.argmax(-1) == targets).float().mean()
 
+
+@torch.no_grad()
+def pcorr(preds, targets):
     logp = -F.cross_entropy(
-        logits.contiguous().view(-1, logits.shape[-1]),
-        x.contiguous().view(-1),
-        reduction='none'
-    ).reshape(x.shape)
-
-    logp = torch.masked_fill(logp, ~mask, 0.0)
-    logp_seq = logp.sum(-1) / (mask).float().sum(-1)
-
-    return torch.exp(-logp_seq).mean()
-
-
-@torch.no_grad()
-def acc(logits, x, ignore_index):
-    x, logits = x[:, 1:], logits[:, :-1]
-    mask = x != ignore_index
-
-    corr = torch.logical_and(
-        logits.argmax(-1) == x,
-        mask
-    ).float().sum()
-    return corr / (mask).float().sum()
-
-
-@torch.no_grad()
-def pcorr(logits, x, ignore_index):
-    x = x[:, 1:].contiguous().view(-1)
-    logits = logits[:, :-1].contiguous().view(-1, logits.shape[-1])
-    mask = x != ignore_index
-
-    logp = -F.cross_entropy(
-        logits, x,
+        preds, targets,
         reduction='none'
     )
     p = torch.exp(logp)
 
-    p = torch.masked_fill(p, ~mask, 0.0)
-    return p.sum() / (mask).float().sum()
+    return p.mean()
+
+
+@torch.no_grad()
+def top5_acc(preds, targets):
+    preds = F.log_softmax(preds, dim=-1)
+
+    logp = -F.cross_entropy(
+        preds, targets,
+        reduction='none'
+    )
+
+    rank = (preds >= logp.unsqueeze(-1)).float().sum(-1)
+    return (rank <= 5).mean()
+
+
+def arc_loss(true_preds, fake_preds):
+    return (
+        F.logsigmoid(-true_preds).mean() +
+        F.logsigmoid(fake_preds).mean()
+    )
+
+
+@torch.no_grad()
+def arc_acc(true_preds, fake_preds):
+    return (
+        (true_preds < 0).float().mean() +
+        (fake_preds >= 0).float().mean()
+    ) / 2
+
+
+@torch.no_grad()
+def arc_pcorr(true_preds, fake_preds):
+    return (
+        torch.sigmoid(-true_preds).mean() +
+        torch.sigmoid(fake_preds).mean()
+    ) / 2

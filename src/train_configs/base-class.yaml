@@ -1,7 +1,7 @@
-trainer_type: XLALMTrainer
+trainer_type: XLAClassTrainer
 
-start_lr: 0.0006
-end_lr: 0.00006
+lr: 0.0006
+lr_steps: # 1,281,167
 
 bs: 512
 mini_bs: 16

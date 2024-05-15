@@ -1,25 +1,16 @@
 """ Models """
 
-from models.annelid.modeling_annelid import AnnelidLMModel
-from models.annelid.configuration_annelid import AnnelidConfig
+from transformers import ViTConfig, ViTForImageClassification
+from models.arc_vit import ArcVitForImageClassification
 
-from models.arc_old.modeling_arc import ArcLMModel
-from models.arc_old.configuration_arc import ArcConfig
-
-from models.base import BaseConfig, BaseLmModel
-from models.arc import ArcLmModel
 
 
 CONFIG_DICT = {
-    "annelid": AnnelidConfig,
-    "arc": BaseConfig,
-    "base": BaseConfig,
-    "arc_old": ArcConfig,
+    "vit": ViTConfig,
+    "arc_vit": ViTConfig,
 }
 
 MODEL_DICT = {
-    "annelid": AnnelidLMModel,
-    "arc": ArcLmModel,
-    "base": BaseLmModel,
-    "arc_old": ArcLMModel,
+    "vit": ViTForImageClassification,
+    "arc_vit": ArcVitForImageClassification
 }

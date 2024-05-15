@@ -6,9 +6,7 @@ import torch_xla.distributed.xla_multiprocessing as xmp
 import os
 import argparse
 
-from transformers import AutoTokenizer
-
-from loaders.wds_loader import get_wds_loader
+from loaders.imagenet_loader import get_imagenet_loader
 from models import CONFIG_DICT, MODEL_DICT
 from trainers import TRAINER_DICT
 
@@ -27,18 +25,14 @@ def _mp_fn(index, args):
         f"Local Ordinal: {xm.get_local_ordinal()}, Local Master: {xm.is_master_ordinal(local=True)}, Master: {xm.is_master_ordinal(local=False)}, World Size: {xm.xrt_world_size()}"
     )
 
-    log_print("Loading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(constants.GPT2_TOKENIZER, resume_download=None)
-    tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-
     log_print("Loading configs...")
-    model_config = load_model_config(args.model_config, tokenizer)
+    model_config = load_model_config(args.model_config)
     train_config = load_train_config(args.train_config)
 
-    seq_length = model_config["max_position_embeddings"]
+    image_size = model_config["image_size"]
 
     log_print("Loading model...")
-    model_type = model_config.pop("model_type")
+    model_type = model_config["model_type"]
     model_type_config = CONFIG_DICT[model_type](**model_config)
     model = MODEL_DICT[model_type](model_type_config).to(xm.xla_device())
     
@@ -49,21 +43,19 @@ def _mp_fn(index, args):
         xm.broadcast_master_param(model)
         model = model.to(torch.float32)
     
-    log_print("Compiling model...")
-    model.model = torch.compile(model.model, backend='openxla')
+    # log_print("Compiling model...")
+    # model.model = torch.compile(model.model, backend='openxla')
 
     log_print("Loading data...")
-    loader = get_wds_loader(
-        args.dataset,
+    loader = get_imagenet_loader(
         "train",
-        tokenizer.pad_token_id,
-        seq_length,
         train_config["bs"],
-        train_config["mini_bs"]
+        train_config["mini_bs"],
+        image_size
     )
 
     log_print("Train!")
-    trainer_type = train_config.pop("trainer_type")
+    trainer_type = train_config["trainer_type"]
     trainer = TRAINER_DICT[trainer_type](
         args.project,
         args.name,
@@ -72,7 +64,6 @@ def _mp_fn(index, args):
     )
     trainer.train(
         model,
-        tokenizer,
         loader
     )
 
