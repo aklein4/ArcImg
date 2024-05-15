@@ -40,7 +40,7 @@ def top5_acc(preds, targets):
     )
 
     rank = (preds >= logp.unsqueeze(-1)).float().sum(-1)
-    out = (rank <= 5).mean()
+    out = (rank <= 5).float().mean()
     log_print("Top5 Accuracy!")
     return out
 
