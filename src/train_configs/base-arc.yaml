@@ -17,4 +17,4 @@ warmup_steps: 10000
 w_arc: 1.0
 
 checkpoint_first: 10
-checkpoint_interval: 30
+checkpoint_interval: 25
