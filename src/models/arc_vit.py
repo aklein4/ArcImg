@@ -8,6 +8,8 @@ from transformers.models.vit.modeling_vit import (
     ViTEncoder,
 )
 
+from utils.logging_utils import log_print
+
 
 class ArcViTEmbeddings(ViTEmbeddings):
 
@@ -40,6 +42,7 @@ class ArcViTEmbeddings(ViTEmbeddings):
 
         embeddings = self.dropout(embeddings)
 
+        log_print("EMBEDDINGS!")
         return embeddings
 
 
@@ -75,9 +78,11 @@ class ArcViTModel(ViTPreTrainedModel):
         hidden_states = self.encoder(
             embedding_output
         )[0]
+        hidden_states = self.layernorm(hidden_states)
 
         cls_state = hidden_states[:, 0]
-        return self.layernorm(cls_state)
+        log_print("CLS STATE!")
+        return cls_state
     
 
 class ArcVitForImageClassification(ViTPreTrainedModel):
@@ -109,6 +114,7 @@ class ArcVitForImageClassification(ViTPreTrainedModel):
         # get logits for all versions
         hidden_states = self.vit(pixel_values)
         class_logits = self.classifier(hidden_states)
+        log_print("CLASS LOGITS!")
 
         true_states = self.vit(pixel_values, labels=true_labels)
         true_logits = self.classifier(true_states)
