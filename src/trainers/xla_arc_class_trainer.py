@@ -9,11 +9,14 @@ from  utils.training_utils import (
     arc_loss, arc_acc, arc_pcorr
 )
 
+from utils.logging_utils import log_print
+
 
 class XLAArcClassTrainer(BaseXLATrainer):
 
     def train_step(self, model, x, y):
         logits, true, fake = model(x, y)
+        log_print("Predictions!")
 
         results = DotDict(
             class_loss=loss(logits, y),
